@@ -25,17 +25,23 @@ jobs:
 
     - name: Create Login Profile
       run: |
-        aws iam create-login-profile --user-name tatum --password ${{ secrets.IAM_PASSWORD }} 
+        aws iam create-login-profile --user-name tatum --password ${{ secrets.IAM_PASSWORD }} --password-reset-required
 
     - name: Create Access Key
+      id: create_access_key
       run: |
-        aws iam create-access-key --user-name tatum
-
+        aws iam create-access-key --user-name tatum > access_key.json
+        cat access_key.json
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+    
     - name: create a bucket
       run: |
         aws s3 mb s3://healerbucket
 
     - name: Create IAM Policy
+      id: create_policy
       run: |
         cat <<EoF > user-policy.json
         {
@@ -48,20 +54,19 @@ jobs:
                 "s3:GetObject",
                 "s3:PutObject"
               ],
-              "Resource": "*"
+              "Resource": "arn:aws:s3:::healerbucket/*"
             }
           ]
         }
         EoF
 
-        Arn=`aws iam create-policy --policy-name GitHubActionPolicyss --policy-document file://user-policy.json | grep Arn`
-
-        POLICY_ARN=$(echo $Arn | cut -d ":" -f2)
-
+        POLICY_ARN=$(aws iam create-policy --policy-name GitHubActionPolicyss --policy-document file://user-policy.json --query 'Policy.Arn' --output text)
+        echo "POLICY_ARN=$POLICY_ARN" >> $GITHUB_ENV
 
     - name: Attach IAM Policy to user
       run: |
-        aws iam attach-user-policy --user-name tatum --policy-arn $POLICY_ARN
+        aws iam attach-user-policy --user-name tatum --policy-arn ${{ env.POLICY_ARN }}
+
 
     
         
