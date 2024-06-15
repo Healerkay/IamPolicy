@@ -54,7 +54,7 @@ jobs:
         }
         EoF
 
-        aws iam create-policy --policy-name My-Policy --policy-document file://user-policy.json
+        aws iam create-policy --policy-name MyGitHubActionPolicy --policy-document file://user-policy.json
 
     - name: Attach IAM Policy to user
       run: |
