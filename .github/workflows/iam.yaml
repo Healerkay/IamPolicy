@@ -54,14 +54,14 @@ jobs:
         }
         EoF
 
-        Arn=`aws iam create-policy --policy-name MyGitHubActionPolicy --policy-document file://user-policy.json | grep Arn`
+        Arn=`aws iam create-policy --policy-name GitHubActionPolicy --policy-document file://user-policy.json | grep Arn`
 
         POLICY_ARN=$(echo $Arn | cut -d ":" -f2)
 
 
     - name: Attach IAM Policy to user
       run: |
-        # POLICY_ARN=$(aws iam list-policies --query 'Policies[?PolicyName==MyGitHubActionPolicy].Arn' --output text)
+        # POLICY_ARN=$(aws iam list-policies --query 'Policies[?PolicyName==GitHubActionPolicy].Arn' --output text)
         aws iam attach-user-policy --role-name bakuta --policy-arn $POLICY_ARN
 
     
