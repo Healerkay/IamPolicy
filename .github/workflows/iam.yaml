@@ -21,16 +21,16 @@ jobs:
 
     - name: Create users
       run: |
-        aws iam create-user --user-name tatum
+        aws iam create-user --user-name jaylen
 
     - name: Create Login Profile
       run: |
-        aws iam create-login-profile --user-name tatum --password ${{ secrets.IAM_PASSWORD }} --password-reset-required
+        aws iam create-login-profile --user-name jaylen --password ${{ secrets.IAM_PASSWORD }} --password-reset-required
 
     - name: Create Access Key
       id: create_access_key
       run: |
-        aws iam create-access-key --user-name tatum > access_key.json
+        aws iam create-access-key --user-name jaylen > access_key.json
         cat access_key.json
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
@@ -60,12 +60,12 @@ jobs:
         }
         EoF
 
-        POLICY_ARN=$(aws iam create-policy --policy-name GitHubActionPolicyss --policy-document file://user-policy.json --query 'Policy.Arn' --output text)
+        POLICY_ARN=$(aws iam create-policy --policy-name GitHubAction --policy-document file://user-policy.json --query 'Policy.Arn' --output text)
         echo "POLICY_ARN=$POLICY_ARN" >> $GITHUB_ENV
 
     - name: Attach IAM Policy to user
       run: |
-        aws iam attach-user-policy --user-name tatum --policy-arn ${{ env.POLICY_ARN }}
+        aws iam attach-user-policy --user-name jaylen --policy-arn ${{ env.POLICY_ARN }}
 
 
     
