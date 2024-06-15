@@ -21,15 +21,15 @@ jobs:
 
     - name: Create users
       run: |
-        aws iam create-user --user-name MyGitHubActionUser
+        aws iam create-user --user-name MyGitHubActionUsers
 
     - name: Create Login Profile
       run: |
-        aws iam create-login-profile --user-name MyGitHubActionUser --password ${{ secrets.IAM_PASSWORD }} 
+        aws iam create-login-profile --user-name MyGitHubActionUsers --password ${{ secrets.IAM_PASSWORD }} 
 
     - name: Create Access Key
       run: |
-        aws iam create-access-key --user-name MyGitHubActionUser
+        aws iam create-access-key --user-name MyGitHubActionUsers
 
     - name: create a bucket
       run: |
